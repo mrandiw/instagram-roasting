@@ -46,12 +46,22 @@ func main() {
 				outputTextTemp := inputBuffer.String()
 				inputBuffer.Reset()
 
+				var finalOutput []string
+
 				// get instagram profile
 				IGProfile := moduleGenerate.GetInstagramProfile(outputTextTemp)
 
-				// generate roasting
-				roast := moduleGenerate.GenerateRoast(IGProfile)
-				finalOutput := moduleGenerate.WrapText(roast, width-2) // Wrap text with width limit
+				if IGProfile.Title != "" {
+					// generate roasting
+					roast, err := moduleGenerate.GenerateRoast(IGProfile)
+					if err != nil {
+						finalOutput = []string{err.Error()}
+					} else {
+						finalOutput = moduleGenerate.WrapText(roast, width-2) // Wrap text with width limit
+					}
+				} else {
+					finalOutput = []string{"Failed get Instagram Profile"}
+				}
 
 				moduleScreen.Drawmodul(width, outputAreaHeight, inputAreaWidth, inputAreaY, finalOutput, inputBuffer)
 			case tcell.KeyBackspace, tcell.KeyBackspace2:

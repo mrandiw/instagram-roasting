@@ -13,7 +13,7 @@ import (
 type (
 	ModuleGenerate interface {
 		GetInstagramProfile(username string) instagram.InstagramProfile
-		GenerateRoast(profile instagram.InstagramProfile) string
+		GenerateRoast(profile instagram.InstagramProfile) (string, error)
 		WrapText(text string, width int) []string
 	}
 
@@ -39,15 +39,18 @@ func (module *moduleGenerate) GetInstagramProfile(username string) instagram.Ins
 	return User
 }
 
-func (module *moduleGenerate) GenerateRoast(profile instagram.InstagramProfile) string {
+func (module *moduleGenerate) GenerateRoast(profile instagram.InstagramProfile) (string, error) {
 
 	Followers := strconv.Itoa(profile.Followers)
 	igDesc := fmt.Sprintf("Name : %s , Bio : %s , Followers : %s", profile.Title, profile.Bio, Followers)
 
 	joinStr := fmt.Sprintf("%s = %s", module.Config.TextRoast, igDesc)
-	Response := GetGemini(joinStr, module.Config)
+	Response, err := GetGemini(joinStr, module.Config)
+	if err != nil {
+		return "", fmt.Errorf("[GenerateRoast] Error GetGemini : %s", err)
+	}
 
-	return Response
+	return Response, nil
 }
 
 // wrapText wraps the input text into lines based on the given width.

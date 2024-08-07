@@ -55,7 +55,7 @@ type Response struct {
 	UsageMetadata map[string]int `json:"usageMetadata"`
 }
 
-func GetGemini(text string, config helper.Config) string {
+func GetGemini(text string, config helper.Config) (string, error) {
 	// Replace with your actual API key
 	apiKey := config.ApiKeyGemini
 
@@ -80,7 +80,7 @@ func GetGemini(text string, config helper.Config) string {
 	// Marshal the request body to JSON
 	jsonData, err := json.Marshal(requestBody)
 	if err != nil {
-		fmt.Println("Error marshalling request body:", err)
+		return "", fmt.Errorf("[GetGemini] Error marshalling request body: %s", err)
 	}
 
 	// Create a new HTTP client
@@ -89,7 +89,7 @@ func GetGemini(text string, config helper.Config) string {
 	// Create a POST request with the specified URL, headers, and body
 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(jsonData))
 	if err != nil {
-		fmt.Println("Error creating request:", err)
+		return "", fmt.Errorf("[GetGemini] Error creating request: %s", err)
 	}
 
 	// Set the authorization header with your API key
@@ -99,31 +99,31 @@ func GetGemini(text string, config helper.Config) string {
 	// Do the HTTP request
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error making request:", err)
+		return "", fmt.Errorf("[GetGemini] Error making request: %s", err)
 	}
 	defer resp.Body.Close()
 
 	// Check for successful response
 	if resp.StatusCode != http.StatusOK {
 		body, _ := ioutil.ReadAll(resp.Body)
-		fmt.Println("Error:", resp.StatusCode, string(body))
+		return "", fmt.Errorf("[GetGemini] StatusCode: %d Error: %s", resp.StatusCode, string(body))
 	}
 
 	// Read the response body
 	responseBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("Error reading response body:", err)
+		return "", fmt.Errorf("[GetGemini] Error reading response body: %s", err)
 	}
 
 	// Unmarshall the response body to a struct
 	var data Response
 	err = json.Unmarshal(responseBody, &data)
 	if err != nil {
-		fmt.Println("Error unmarshalling response body:", err)
+		return "", fmt.Errorf("[GetGemini] Error unmarshalling response body: %s", err)
 	}
 
 	// Access the generated content from the first candidate
 	generatedContent := data.Candidates[0].Content.Parts[0].Text
 
-	return generatedContent
+	return generatedContent, nil
 }
