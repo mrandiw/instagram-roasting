@@ -36,14 +36,20 @@ cd instagram-roasting
 
 3. you can create your own API_KEY_GEMINI from this website page : https://aistudio.google.com/app/apikey
 
-4. Run the App:
+4. Run the App directly:
 
 ```sh
 go run main.go
 ```
 
-4. Build the App:
+5. Build & Run from bulder:
 
 ```sh
-go run main.go
+BUILD :
+Mac & Ubuntu : go build -o main .
+Windows : go build -o main.exe .
+
+RUN :
+Mac & Ubuntu : ./main
+Windows : ./main.exe
 ```
