@@ -13,6 +13,7 @@ Instagram Roasting is a terminal-based application built with Go and the `tcell`
 - Terminal-based interface using the `tcell` library.
 - Input text is displayed in a designated output box.
 - Automatic word wrapping for long text.
+- Support Gemini AI
 
 ## Installation
 
@@ -57,4 +58,3 @@ Windows : ./main.exe
 6. Demo App:
 
 https://github.com/user-attachments/assets/967f4fda-62ee-4428-a40d-2fe9f8feb7a3
-
